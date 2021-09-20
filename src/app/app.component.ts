@@ -53,19 +53,32 @@ export class AppComponent implements OnInit{
           subscriber.next(`Resposta com delay, ${nome}`);
         }, 6000);
       } else {
-          subscriber.error(`Ops, deu erro!!!`);
+        subscriber.error(`Ops, deu erro!!!`);
       }
+      // subscriber.complete();
     })
   }
 
   ngOnInit(): void {
-    this.minhaPromise('Felipe')
-    .then(res => console.log(res))
-    .catch(erro => console.log(erro));
+    // this.minhaPromise('Felipe')
+    // .then(res => console.log(res))
+    // .catch(erro => console.log(erro));
 
     this.minhaObservable('Felipe')
       .subscribe(
         res => console.log(res),
-        erro => console.log(erro));
+        erro => console.log(erro),
+        () => console.log('Fim!'));
+
+    // CRIANDO UM OBSERVER
+    const observer = {
+      next: valor => console.log(`Next: ${valor}`),
+      error: erro => console.log(`Error: ${erro}`),
+      complete: () => console.log('FIM')
+    }
+
+    const obs = this.minhaObservable('Felipe');
+    obs.subscribe(observer);
+
   }
 }
