@@ -55,30 +55,66 @@ export class AppComponent implements OnInit{
       } else {
         subscriber.error(`Ops, deu erro!!!`);
       }
-      // subscriber.complete();
+    })
+  }
+
+  usuarioObservable(nome: string, email: string): Observable<Usuario> {
+    return new Observable(subscriber => {
+      if(nome === 'Admin') {
+        const usuario = new Usuario(nome, email);
+
+        setTimeout(() => {
+          subscriber.next(usuario);
+        }, 1000);
+        
+        setTimeout(() => {
+          subscriber.next(usuario);
+        }, 2000);
+        
+        setTimeout(() => {
+          subscriber.next(usuario);
+        }, 3000);
+        
+        setTimeout(() => {
+          subscriber.next(usuario);
+        }, 4000);
+        
+        setTimeout(() => {
+          subscriber.complete();
+        }, 5000);
+      } else {
+        subscriber.error(`Ops, deu erro!!!`);
+      }
     })
   }
 
   ngOnInit(): void {
-    // this.minhaPromise('Felipe')
-    // .then(res => console.log(res))
-    // .catch(erro => console.log(erro));
-
-    this.minhaObservable('Felipe')
-      .subscribe(
-        res => console.log(res),
-        erro => console.log(erro),
-        () => console.log('Fim!'));
-
+    
     // CRIANDO UM OBSERVER
     const observer = {
-      next: valor => console.log(`Next: ${valor}`),
-      error: erro => console.log(`Error: ${erro}`),
+      next: valor => console.log('Next: ', valor),
+      error: erro => console.log('Error:', erro),
       complete: () => console.log('FIM')
     }
 
-    const obs = this.minhaObservable('Felipe');
-    obs.subscribe(observer);
+    const obs = this.usuarioObservable('Admin', 'admin@admin.com');
+    const subs = obs.subscribe(observer);
 
+    // DEPOIS DE 3 SEGUNDOS, CANCELOU-SE A SUBSCRIPTION
+    setTimeout(() => {
+      subs.unsubscribe();
+      console.log('Conexão fechada? ', subs.closed);
+    }, 3500);
+  }  
+}
+
+
+export class Usuario {
+  constructor(nome: string, email: string) {
+    this.nome = nome;
+    this.email = email;
   }
+
+  nome: string;
+  email: string;
 }
